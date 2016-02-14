@@ -4,26 +4,22 @@ import skeleton.bean.player.Player;
 
 public class Cell {
 
-    private Player player;
+	private final Player player;
+	private boolean checked;
 
-    private boolean checked;
+	public Cell(Player player) {
+		this.player = player;
+	}
 
-    public Cell() {
-    }
+	public boolean isChecked() {
+		return checked;
+	}
 
-    public boolean isChecked() {
-        return checked;
-    }
+	public void check() {
+		this.checked = true;
+	}
 
-    public void check() {
-        this.checked = true;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
+	public Player getPlayer() {
+		return player;
+	}
 }

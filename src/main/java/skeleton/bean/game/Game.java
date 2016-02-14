@@ -23,15 +23,14 @@ public class Game {
 
 		players.stream().forEach(player -> {
 			for (int j = 0; j < cellPerColor; j++) {
-				Cell cell = new Cell();
-				cell.setPlayer(player);
+				Cell cell = new Cell(player);
 				table.add(cell);
 			}
 			player.setInitialCellCount(cellPerColor);
 		});
 
 		for (int i = table.size(); i < size * size; i++) {
-			table.add(new Cell());
+			table.add(new Cell(null));
 		}
 		Collections.shuffle(table);
 	}
