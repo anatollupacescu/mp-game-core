@@ -1,7 +1,6 @@
 package skeleton.service;
 
 import org.eclipse.jetty.websocket.api.Session;
-
 import skeleton.bean.game.Cell;
 import skeleton.bean.player.Player;
 

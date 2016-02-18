@@ -1,13 +1,12 @@
 package skeleton.service;
 
-import java.util.List;
 
 import org.eclipse.jetty.websocket.api.Session;
-
 import reactor.rx.action.Control;
-import skeleton.bean.client.ClientMessage;
 import skeleton.bean.game.Cell;
 import skeleton.bean.player.Player;
+
+import java.util.List;
 
 public interface MessageService {
 
@@ -19,9 +18,13 @@ public interface MessageService {
 
 	void broadcastWinner(Player winner);
 
-	void sendMessage(Session session, ClientMessage<?> message);
-
-	void sendMessage(Player player, ClientMessage<?> message);
+    void sendMessage(Session session, String message);
 
 	Control registerSession(Player player);
+
+	void alert(Player player, String message);
+
+	void log(Player player, String message);
+
+    void sendPlayerList(Session session, List<Player> playerList);
 }

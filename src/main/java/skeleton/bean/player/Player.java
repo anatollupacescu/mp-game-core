@@ -1,7 +1,6 @@
 package skeleton.bean.player;
 
 import org.eclipse.jetty.websocket.api.Session;
-
 import reactor.rx.action.Control;
 
 public class Player {
@@ -113,5 +112,9 @@ public class Player {
 
 	public Control getControl() {
 		return control;
+	}
+
+	public void disableReadyButton() {
+
 	}
 }

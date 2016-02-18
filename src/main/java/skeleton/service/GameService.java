@@ -1,9 +1,9 @@
 package skeleton.service;
 
-import java.util.Optional;
-
 import skeleton.bean.game.Cell;
 import skeleton.bean.player.Player;
+
+import java.util.Optional;
 
 public interface GameService {
 

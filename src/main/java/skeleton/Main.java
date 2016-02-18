@@ -1,18 +1,15 @@
 package skeleton;
 
-import java.util.Optional;
-
 import org.eclipse.jetty.websocket.api.Session;
-
 import reactor.rx.action.Control;
-import skeleton.bean.client.ClientMessage;
 import skeleton.bean.game.Cell;
 import skeleton.bean.player.Player;
-import skeleton.bean.player.ReadyButton;
 import skeleton.service.GameService;
 import skeleton.service.MainService;
 import skeleton.service.MessageService;
 import skeleton.service.PlayerService;
+
+import java.util.Optional;
 
 public class Main implements MainService {
 
@@ -27,21 +24,20 @@ public class Main implements MainService {
 		this.messageService = messageService;
 	}
 
-	@Override
 	public void playerLogIn(Session session, String name) {
 
 		Optional<Player> playerOpt = playerService.getPlayerBySession(session);
 
 		if (playerOpt.isPresent()) {
 
-			messageService.sendMessage(session, ClientMessage.createAlert("Already logged in"));
+			messageService.alert(playerOpt.get(), "Already logged in");
 
 			return;
 		}
 
 		if (name == null) {
 
-			messageService.sendMessage(session, ClientMessage.createAlert("Name is mandatory"));
+			messageService.alert(playerOpt.get(), "Name is mandatory");
 
 			return;
 		}
@@ -54,13 +50,12 @@ public class Main implements MainService {
 
 		if (gameService.isGameRunning()) {
 
-			player.setReadyButtonState(ReadyButton.disabled);
+			player.disableReadyButton();
 		}
 
 		messageService.broadcastPlayerList(playerService.getPlayerList());
 	}
 
-	@Override
 	public void playerLogOut(Player player) {
 
 		Optional<Player> playerOpt = playerService.getPlayerBySession(player.getSession());
@@ -91,19 +86,18 @@ public class Main implements MainService {
 		}
 	}
 
-	@Override
 	public void playerReady(Player player) {
 
 		if (player.isReady()) {
 
-			messageService.sendMessage(player.getSession(), ClientMessage.createAlert("Invalid action"));
+			messageService.alert(player, "Invalid action");
 
 			return;
 		}
 
 		if (gameService.isGameRunning()) {
 
-			messageService.sendMessage(player.getSession(), ClientMessage.createAlert("Game already started"));
+			messageService.log(player, "Game already started");
 
 			return;
 		}
@@ -121,33 +115,33 @@ public class Main implements MainService {
 		}
 	}
 
-	@Override
 	public void playerClickedCell(Player player, Cell cell) {
 
 		if (!gameService.isGameRunning()) {
 
-			messageService.sendMessage(player, ClientMessage.createAlert("Game not started"));
+			messageService.alert(player, "Game not started");
 
 			return;
 		}
 
 		if (!cell.getPlayer().equals(player)) {
 
-			messageService.sendMessage(player, ClientMessage.createLog("Not your cell"));
+			messageService.log(player, "Not your cell");
 
 			return;
 		}
 
 		gameService.markCell(player, cell);
 
+		/* TODO move this to the implementation */
 		Player winner = gameService.getWinner();
 
 		if (winner != null) {
 
-			gameService.stopGame();
+			if(gameService.stopGame()) {
 
-			messageService.broadcastWinner(winner);
-
+				messageService.broadcastWinner(winner);
+			}
 		} else {
 
 			messageService.broadcastMarkedCell(cell);
