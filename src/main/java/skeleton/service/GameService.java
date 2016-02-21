@@ -3,21 +3,17 @@ package skeleton.service;
 import skeleton.bean.game.Cell;
 import skeleton.bean.player.Player;
 
-import java.util.Optional;
-
 public interface GameService {
 
-	Player getWinner();
+    Player getWinner();
 
-	boolean startGame();
+    void startGame();
 
-	boolean stopGame();
+    void stopGame();
 
-	Object[] getGameData();
+    boolean isGameRunning();
 
-	boolean isGameRunning();
+    Object[] getGameData();
 
-	void markCell(Player user, Cell cell);
-
-	Optional<Cell> getCellById(String value);
+    void markCell(Player user, Cell cell);
 }

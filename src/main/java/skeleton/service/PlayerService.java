@@ -8,13 +8,13 @@ import java.util.Optional;
 
 public interface PlayerService {
 
-	Player addPlayer(Session session, String name);
+    Player addPlayer(Session session, String name);
 
-	void removePlayer(Player Player);
+    List<Player> getPlayerList();
 
-	boolean isTheLastPlayerReady(Player player);
+    void removePlayer(Player player);
 
-	Optional<Player> getPlayerBySession(Session session);
+    boolean isTheLastPlayerReady(Player player);
 
-	List<Player> getPlayerList();
+    Optional<Player> getPlayerBySession(Session session);
 }

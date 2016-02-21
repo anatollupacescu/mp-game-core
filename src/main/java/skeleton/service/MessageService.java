@@ -18,8 +18,6 @@ public interface MessageService {
 
 	void broadcastWinner(Player winner);
 
-    void sendMessage(Session session, String message);
-
 	Control registerSession(Player player);
 
 	void alert(Player player, String message);
