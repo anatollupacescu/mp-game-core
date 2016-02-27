@@ -1,16 +1,14 @@
 package skeleton;
 
 import org.eclipse.jetty.websocket.api.Session;
-import skeleton.bean.game.Cell;
-import skeleton.bean.player.Player;
 
 public interface Main {
 
 	void playerLogIn(Session session, String name);
 
-	void playerLogOut(Player user);
+	void playerLogOut(Session session);
 
-	void playerReady(Player user);
+	void playerReady(Session session);
 
-	void playerClickedCell(Player user, Cell cell);
+	void playerClickedCell(Session session, String cellId);
 }

@@ -25,4 +25,8 @@ public interface MessageService {
 	void log(Player player, String message);
 
     void sendPlayerList(Session session, List<Player> playerList);
+
+	void alert(Session session, String message);
+
+	void log(Session session, String message);
 }

@@ -7,10 +7,9 @@ import skeleton.service.GameService;
 import skeleton.service.MessageService;
 import skeleton.service.PlayerService;
 
-public abstract class PlayerStage {
+public class PlayerStage {
 
     private PlayerService playerService;
-    private GameStage gameStage;
     private GameService gameService;
     private MessageService messageService;
 
@@ -62,6 +61,7 @@ public abstract class PlayerStage {
             startGame(gameService.getGameData());
 
         } else {
+
             messageService.broadcastPlayerList(playerService.getPlayerList());
         }
     }

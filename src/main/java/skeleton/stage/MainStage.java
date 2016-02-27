@@ -12,90 +12,126 @@ import java.util.Optional;
 
 public class MainStage implements Main {
 
-    private final MessageService messageService;
+	private final MessageService messageService;
 
-    private final PlayerService playerService;
-    private final PlayerStage playerStage;
+	private final PlayerService playerService;
+	private final PlayerStage playerStage;
 
-    private final GameService gameService;
-    private final GameStage gameStage;
+	private final GameService gameService;
+	private final GameStage gameStage;
 
-    public MainStage(PlayerService playerService, PlayerStage playerStage, GameService gameService, GameStage gameStage, MessageService messageService) {
-        super();
-        this.playerService = playerService;
-        this.playerStage = playerStage;
-        this.gameService = gameService;
-        this.gameStage = gameStage;
-        this.messageService = messageService;
-    }
+	public MainStage(PlayerService playerService, GameService gameService, MessageService messageService) {
+		super();
+		this.playerService = playerService;
+		this.playerStage = new PlayerStage();
+		this.gameService = gameService;
+		this.gameStage = new GameStage();
+		this.messageService = messageService;
+	}
 
-    public void playerLogIn(Session session, String name) {
+	public void playerLogIn(Session session, String name) {
 
-        Optional<Player> playerOpt = playerService.getPlayerBySession(session);
+		if (name == null) {
 
-        if (playerOpt.isPresent()) {
+			messageService.alert(session, "Name is mandatory");
 
-            messageService.alert(playerOpt.get(), "Already logged in");
+			return;
+		}
 
-            return;
-        }
+		Optional<Player> playerOpt = playerService.getPlayerBySession(session);
 
-        if (name == null) {
+		if (playerOpt.isPresent()) {
 
-            messageService.alert(playerOpt.get(), "Name is mandatory");
+			messageService.alert(playerOpt.get(), "Already logged in");
 
-            return;
-        }
+			return;
+		}
 
-        playerStage.addPlayer(session, name);
-    }
+		playerStage.addPlayer(session, name);
+	}
 
-    public void playerLogOut(Player player) {
+	public void playerLogOut(Session session) {
 
-        playerStage.removePlayer(player);
-    }
+		playerService.getPlayerBySession(session).ifPresent(player -> {
 
-    public void playerReady(Player player) {
+			playerStage.removePlayer(player);
+		});
+	}
 
-        /* read */
-        if (player.isReady()) {
+	public void playerReady(Session session) {
 
-            messageService.alert(player, "Invalid action");
+		Optional<Player> playerOpt = playerService.getPlayerBySession(session);
 
-            return;
-        }
+		if (!playerOpt.isPresent()) {
 
-        /* read */
-        if (gameService.isGameRunning()) {
+			messageService.log(session, "Not logged in");
 
-            messageService.log(player, "Game already started");
+			return;
+		}
 
-            return;
-        }
+		Player player = playerOpt.get();
 
-        /* commit */
-        playerStage.playerReady(player);
-    }
+		/* read */
+		if (player.isReady()) {
 
-    public void playerClickedCell(Player player, Cell cell) {
+			messageService.alert(player, "Invalid action");
 
-        /* read */
-        if (!gameService.isGameRunning()) {
+			return;
+		}
 
-            messageService.alert(player, "Game not started");
+		/* read */
+		if (gameService.isGameRunning()) {
 
-            return;
-        }
+			messageService.log(player, "Game already started");
 
-        /* read */
-        if (!cell.getPlayer().equals(player)) {
+			return;
+		}
 
-            messageService.log(player, "Not your cell");
+		/* commit */
+		playerStage.playerReady(player);
+	}
 
-            return;
-        }
+	public void playerClickedCell(Session session, String cellId) {
 
-        /* commit */
-        gameStage.markCell(player, cell);
-    }
+		Optional<Player> playerOpt = playerService.getPlayerBySession(session);
+
+		if (!playerOpt.isPresent()) {
+
+			messageService.log(session, "Not logged in");
+
+			return;
+		}
+
+		Player player = playerOpt.get();
+
+		Optional<Cell> cellOpt = gameService.getCellById(cellId);
+
+		if (!cellOpt.isPresent()) {
+
+			messageService.log(player, "Not your cell");
+
+			return;
+		}
+
+		Cell cell = cellOpt.get();
+
+		/* read */
+		if (!gameService.isGameRunning()) {
+
+			messageService.alert(player, "Game not started");
+
+			return;
+		}
+
+		/* read */
+		if (!cell.getPlayer().equals(player)) {
+
+			messageService.log(player, "Not your cell");
+
+			return;
+		}
+
+		/* commit */
+		gameStage.markCell(player, cell);
+	}
 }

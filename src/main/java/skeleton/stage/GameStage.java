@@ -5,7 +5,7 @@ import skeleton.bean.player.Player;
 import skeleton.service.GameService;
 import skeleton.service.MessageService;
 
-public abstract class GameStage {
+public class GameStage {
 
     private GameService gameService;
     private MessageService messageService;
