@@ -29,10 +29,6 @@ public class Player {
 		this.name = name;
 	}
 
-	public boolean remainingCellCountIs(int remainingCellCount) {
-		return this.cellCount == remainingCellCount;
-	}
-
 	public void decrementCellCount() {
 		cellCount--;
 	}

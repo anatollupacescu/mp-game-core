@@ -98,7 +98,7 @@ public class MainStage implements Main {
 
 		Player player = playerOpt.get();
 
-		Optional<Cell> cellOpt = gameService.getCellById(cellId);
+		Optional<Cell> cellOpt = gameService.getCellByIndex(cellId);
 
 		if (!cellOpt.isPresent()) {
 
@@ -126,6 +126,6 @@ public class MainStage implements Main {
 		}
 
 		/* commit */
-		gameStage.markCell(player, cell);
+		gameStage.markCell(cell);
 	}
 }

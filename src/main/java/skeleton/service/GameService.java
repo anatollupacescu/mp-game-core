@@ -1,5 +1,6 @@
 package skeleton.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import skeleton.bean.game.Cell;
@@ -9,15 +10,15 @@ public interface GameService {
 
     Player getWinner();
 
-    void startGame();
-
     void stopGame();
 
     boolean isGameRunning();
 
-    Object[] getGameData();
+    List<Cell> getGameData();
 
-    void markCell(Player user, Cell cell);
+    void markCell(Cell cell);
 
-	Optional<Cell> getCellById(String value);
+	void startGame(List<Player> playerList);
+
+	Optional<Cell> getCellByIndex(String id);
 }

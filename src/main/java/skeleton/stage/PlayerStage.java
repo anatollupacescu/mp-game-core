@@ -1,8 +1,9 @@
 package skeleton.stage;
 
 import org.eclipse.jetty.websocket.api.Session;
-
+import java.util.List;
 import reactor.rx.action.Control;
+import skeleton.bean.game.Cell;
 import skeleton.bean.player.Player;
 import skeleton.service.GameService;
 import skeleton.service.MessageService;
@@ -70,9 +71,9 @@ public class PlayerStage {
 		}
 	}
 
-	protected void startGame(Object[] gameData) {
+	protected void startGame(List<Cell> gameData) {
 
-		gameService.startGame();
+		gameService.startGame(playerService.getPlayerList());
 
 		messageService.broadcastGameTable(gameService.getGameData());
 	}

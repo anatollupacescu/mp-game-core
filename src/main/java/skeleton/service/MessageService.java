@@ -12,7 +12,7 @@ public interface MessageService {
 
 	void broadcastPlayerList(List<Player> playerList);
 
-	void broadcastGameTable(Object[] gameData);
+	void broadcastGameTable(List<Cell> gameData);
 
 	void broadcastMarkedCell(Cell cell);
 

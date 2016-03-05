@@ -10,9 +10,9 @@ public class GameStage {
     private GameService gameService;
     private MessageService messageService;
 
-    public void markCell(Player player, Cell cell) {
+    public void markCell(Cell cell) {
 
-        gameService.markCell(player, cell);
+        gameService.markCell(cell);
 
         Player winner = gameService.getWinner();
 
