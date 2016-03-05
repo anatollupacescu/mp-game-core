@@ -1,6 +1,7 @@
 package skeleton.stage;
 
 import org.eclipse.jetty.websocket.api.Session;
+
 import reactor.rx.action.Control;
 import skeleton.bean.player.Player;
 import skeleton.service.GameService;
@@ -9,67 +10,70 @@ import skeleton.service.PlayerService;
 
 public class PlayerStage {
 
-    private PlayerService playerService;
-    private GameService gameService;
-    private MessageService messageService;
+	private PlayerService playerService;
+	private GameService gameService;
+	private MessageService messageService;
 
-    public void addPlayer(Session session, String name) {
+	public void addPlayer(Session session, String name) {
 
-        Player player = playerService.addPlayer(session, name);
+		Player player = playerService.addPlayer(session, name);
 
-        Control control = messageService.registerSession(player);
+		Control control = messageService.registerSession(player);
 
-        player.setControl(control);
+		player.setControl(control);
 
-        if (gameService.isGameRunning()) {
+		if (gameService.isGameRunning()) {
 
-            player.disableReadyButton();
-        }
+			player.disableReadyButton();
+		}
 
-        messageService.broadcastPlayerList(playerService.getPlayerList());
-    }
+		messageService.broadcastPlayerList(playerService.getPlayerList());
+	}
 
-    public void removePlayer(Player player) {
+	public void removePlayer(Session playerSession) {
 
-        playerService.removePlayer(player);
+		playerService.getPlayerBySession(playerSession).ifPresent(player -> {
 
-        messageService.broadcastPlayerList(playerService.getPlayerList());
+			playerService.removePlayer(player);
+		});
 
-        if (gameService.isGameRunning()) {
+		messageService.broadcastPlayerList(playerService.getPlayerList());
 
-            Player winner = gameService.getWinner();
+		if (gameService.isGameRunning()) {
 
-            if (winner != null) {
+			Player winner = gameService.getWinner();
 
-                gameService.stopGame();
+			if (winner != null) {
 
-                messageService.broadcastWinner(winner);
-            }
+				gameService.stopGame();
 
-        } else if (playerService.isTheLastPlayerReady(player)) {
+				messageService.broadcastWinner(winner);
+			}
 
-            startGame(gameService.getGameData());
-        }
-    }
+		} else if (playerService.allPlayersReady()) {
 
-    public void playerReady(Player player) {
+			startGame(gameService.getGameData());
+		}
+	}
 
-        player.setReady(true);
+	public void playerReady(Player player) {
 
-        if (playerService.isTheLastPlayerReady(player)) {
+		player.setReady(true);
 
-            startGame(gameService.getGameData());
+		if (playerService.allPlayersReady()) {
 
-        } else {
+			startGame(gameService.getGameData());
 
-            messageService.broadcastPlayerList(playerService.getPlayerList());
-        }
-    }
+		} else {
 
-    protected void startGame(Object[] gameData) {
+			messageService.broadcastPlayerList(playerService.getPlayerList());
+		}
+	}
 
-        gameService.startGame();
+	protected void startGame(Object[] gameData) {
 
-        messageService.broadcastGameTable(gameService.getGameData());
-    }
+		gameService.startGame();
+
+		messageService.broadcastGameTable(gameService.getGameData());
+	}
 }

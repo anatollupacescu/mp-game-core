@@ -38,24 +38,18 @@ public class MainStage implements Main {
 			return;
 		}
 
-		Optional<Player> playerOpt = playerService.getPlayerBySession(session);
+		if (!playerService.isPlayerLoggedIn(session)) {
 
-		if (playerOpt.isPresent()) {
-
-			messageService.alert(playerOpt.get(), "Already logged in");
-
-			return;
+			playerStage.addPlayer(session, name);
 		}
-
-		playerStage.addPlayer(session, name);
 	}
 
 	public void playerLogOut(Session session) {
 
-		playerService.getPlayerBySession(session).ifPresent(player -> {
+		if (!playerService.isPlayerLoggedIn(session)) {
 
-			playerStage.removePlayer(player);
-		});
+			playerStage.removePlayer(session);
+		}
 	}
 
 	public void playerReady(Session session) {

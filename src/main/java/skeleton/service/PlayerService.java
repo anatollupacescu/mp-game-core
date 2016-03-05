@@ -14,7 +14,9 @@ public interface PlayerService {
 
     void removePlayer(Player player);
 
-    boolean isTheLastPlayerReady(Player player);
-
     Optional<Player> getPlayerBySession(Session session);
+
+	boolean isPlayerLoggedIn(Session session);
+
+	boolean allPlayersReady();
 }
