@@ -7,10 +7,16 @@ import skeleton.service.MessageService;
 
 public class GameStage {
 
-    private GameService gameService;
-    private MessageService messageService;
+    private final GameService gameService;
+    private final MessageService messageService;
 
-    public void markCell(Cell cell) {
+    public GameStage(GameService gameService, MessageService messageService) {
+		super();
+		this.gameService = gameService;
+		this.messageService = messageService;
+	}
+
+	public void markCell(Cell cell) {
 
         gameService.markCell(cell);
 

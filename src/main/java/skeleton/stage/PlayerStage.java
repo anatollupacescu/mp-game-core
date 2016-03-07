@@ -11,9 +11,16 @@ import skeleton.service.PlayerService;
 
 public class PlayerStage {
 
-	private PlayerService playerService;
-	private GameService gameService;
-	private MessageService messageService;
+	private final PlayerService playerService;
+	private final GameService gameService;
+	private final MessageService messageService;
+
+	public PlayerStage(PlayerService playerService, GameService gameService, MessageService messageService) {
+		super();
+		this.playerService = playerService;
+		this.gameService = gameService;
+		this.messageService = messageService;
+	}
 
 	public void addPlayer(Session session, String name) {
 

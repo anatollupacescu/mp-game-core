@@ -23,10 +23,10 @@ public class MainStage implements Main {
 	public MainStage(PlayerService playerService, GameService gameService, MessageService messageService) {
 		super();
 		this.playerService = playerService;
-		this.playerStage = new PlayerStage();
 		this.gameService = gameService;
-		this.gameStage = new GameStage();
 		this.messageService = messageService;
+		this.playerStage = new PlayerStage(playerService, gameService, messageService);
+		this.gameStage = new GameStage(gameService, messageService);
 	}
 
 	public void playerLogIn(Session session, String name) {
