@@ -80,5 +80,7 @@ public class PlayerStage {
 		gameService.startGame(playerService.getPlayerList());
 
 		messageService.broadcastGameTable(gameService.getGameData());
+		
+		messageService.broadcastPlayerList(playerService.getPlayerList());
 	}
 }
