@@ -14,7 +14,7 @@ public interface MessageService {
 
 	void broadcastGameTable(List<Cell> gameData);
 
-	void broadcastMarkedCell(Cell cell);
+	void broadcastMarkedCell(int cellId);
 
 	void broadcastWinner(Player winner);
 

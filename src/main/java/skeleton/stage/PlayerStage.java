@@ -1,9 +1,8 @@
 package skeleton.stage;
 
 import org.eclipse.jetty.websocket.api.Session;
-import java.util.List;
+
 import reactor.rx.action.Control;
-import skeleton.bean.game.Cell;
 import skeleton.bean.player.Player;
 import skeleton.service.GameService;
 import skeleton.service.MessageService;
@@ -43,42 +42,40 @@ public class PlayerStage {
 		playerService.getPlayerBySession(playerSession).ifPresent(player -> {
 
 			playerService.removePlayer(player);
-		});
 
-		messageService.broadcastPlayerList(playerService.getPlayerList());
-
-		if (gameService.isGameRunning()) {
-
-			Player winner = gameService.getWinner();
-
-			if (winner != null) {
-
-				gameService.stopGame();
-
-				messageService.broadcastWinner(winner);
+			gameService.dropPlayer(player);
+		
+			messageService.broadcastPlayerList(playerService.getPlayerList());
+	
+			if (gameService.isGameRunning()) {
+	
+				gameService.getWinner().ifPresent(winner -> {
+	
+					gameService.stopGame();
+	
+					messageService.broadcastWinner(winner);
+				});
+	
+			} else if (playerService.allPlayersReady()) {
+	
+				startGame();
 			}
-
-		} else if (playerService.allPlayersReady()) {
-
-			startGame(gameService.getGameData());
-		}
+		});
 	}
 
 	public void playerReady(Player player) {
 
 		player.setReady(true);
 
+		messageService.broadcastPlayerList(playerService.getPlayerList());
+
 		if (playerService.allPlayersReady()) {
 
-			startGame(gameService.getGameData());
-
-		} else {
-
-			messageService.broadcastPlayerList(playerService.getPlayerList());
+			startGame();
 		}
 	}
 
-	protected void startGame(List<Cell> gameData) {
+	protected void startGame() {
 
 		gameService.startGame(playerService.getPlayerList());
 

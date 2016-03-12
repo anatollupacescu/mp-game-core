@@ -1,7 +1,6 @@
 package skeleton.stage;
 
 import skeleton.bean.game.Cell;
-import skeleton.bean.player.Player;
 import skeleton.service.GameService;
 import skeleton.service.MessageService;
 
@@ -18,18 +17,15 @@ public class GameStage {
 
 	public void markCell(Cell cell) {
 
-        gameService.markCell(cell);
+        int cellId = gameService.markCell(cell);
 
-        Player winner = gameService.getWinner();
+        messageService.broadcastMarkedCell(cellId);
 
-        if (winner != null) {
+        gameService.getWinner().ifPresent(winner -> {
 
             gameService.stopGame();
 
             messageService.broadcastWinner(winner);
-        } else {
-
-            messageService.broadcastMarkedCell(cell);
-        }
+        });
     }
 }

@@ -46,10 +46,7 @@ public class MainStage implements Main {
 
 	public void playerLogOut(Session session) {
 
-		if (!playerService.isPlayerLoggedIn(session)) {
-
-			playerStage.removePlayer(session);
-		}
+		playerStage.removePlayer(session);
 	}
 
 	public void playerReady(Session session) {
@@ -98,6 +95,14 @@ public class MainStage implements Main {
 
 		Player player = playerOpt.get();
 
+		/* read */
+		if (!gameService.isGameRunning()) {
+
+			messageService.alert(player, "Game not started");
+
+			return;
+		}
+
 		Optional<Cell> cellOpt = gameService.getCellByIndex(cellId);
 
 		if (!cellOpt.isPresent()) {
@@ -110,15 +115,7 @@ public class MainStage implements Main {
 		Cell cell = cellOpt.get();
 
 		/* read */
-		if (!gameService.isGameRunning()) {
-
-			messageService.alert(player, "Game not started");
-
-			return;
-		}
-
-		/* read */
-		if (!cell.getPlayer().equals(player)) {
+		if (!player.equals(cell.getPlayer())) {
 
 			messageService.log(player, "Not your cell");
 

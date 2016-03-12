@@ -8,7 +8,7 @@ import skeleton.bean.player.Player;
 
 public interface GameService {
 
-    Player getWinner();
+    Optional<Player> getWinner();
 
     void stopGame();
 
@@ -16,9 +16,11 @@ public interface GameService {
 
     List<Cell> getGameData();
 
-    void markCell(Cell cell);
+    int markCell(Cell cell);
 
 	void startGame(List<Player> playerList);
 
 	Optional<Cell> getCellByIndex(String id);
+
+	void dropPlayer(Player player);
 }
