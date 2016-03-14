@@ -1,6 +1,4 @@
-package skeleton.bean.game;
-
-import skeleton.bean.player.Player;
+package skeleton.bean;
 
 public class Cell {
 

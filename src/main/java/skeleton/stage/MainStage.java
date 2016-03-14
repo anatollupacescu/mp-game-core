@@ -2,8 +2,8 @@ package skeleton.stage;
 
 import org.eclipse.jetty.websocket.api.Session;
 import skeleton.Main;
-import skeleton.bean.game.Cell;
-import skeleton.bean.player.Player;
+import skeleton.bean.Cell;
+import skeleton.bean.Player;
 import skeleton.service.GameService;
 import skeleton.service.MessageService;
 import skeleton.service.PlayerService;

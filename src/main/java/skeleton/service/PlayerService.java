@@ -1,7 +1,8 @@
 package skeleton.service;
 
 import org.eclipse.jetty.websocket.api.Session;
-import skeleton.bean.player.Player;
+
+import skeleton.bean.Player;
 
 import java.util.List;
 import java.util.Optional;

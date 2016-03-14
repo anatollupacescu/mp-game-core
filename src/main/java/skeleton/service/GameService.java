@@ -3,8 +3,8 @@ package skeleton.service;
 import java.util.List;
 import java.util.Optional;
 
-import skeleton.bean.game.Cell;
-import skeleton.bean.player.Player;
+import skeleton.bean.Cell;
+import skeleton.bean.Player;
 
 public interface GameService {
 

@@ -1,12 +1,12 @@
 package skeleton.service;
 
 
-import org.eclipse.jetty.websocket.api.Session;
-import reactor.rx.action.Control;
-import skeleton.bean.game.Cell;
-import skeleton.bean.player.Player;
-
 import java.util.List;
+
+import org.eclipse.jetty.websocket.api.Session;
+
+import skeleton.bean.Cell;
+import skeleton.bean.Player;
 
 public interface MessageService {
 
@@ -17,8 +17,6 @@ public interface MessageService {
 	void broadcastMarkedCell(int cellId);
 
 	void broadcastWinner(Player winner);
-
-	Control registerSession(Player player);
 
 	void alert(Player player, String message);
 

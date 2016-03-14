@@ -1,6 +1,6 @@
 package skeleton.stage;
 
-import skeleton.bean.game.Cell;
+import skeleton.bean.Cell;
 import skeleton.service.GameService;
 import skeleton.service.MessageService;
 

@@ -2,8 +2,7 @@ package skeleton.stage;
 
 import org.eclipse.jetty.websocket.api.Session;
 
-import reactor.rx.action.Control;
-import skeleton.bean.player.Player;
+import skeleton.bean.Player;
 import skeleton.service.GameService;
 import skeleton.service.MessageService;
 import skeleton.service.PlayerService;
@@ -23,16 +22,7 @@ public class PlayerStage {
 
 	public void addPlayer(Session session, String name) {
 
-		Player player = playerService.addPlayer(session, name);
-
-		Control control = messageService.registerSession(player);
-
-		player.setControl(control);
-
-		if (gameService.isGameRunning()) {
-
-			player.disableReadyButton();
-		}
+		playerService.addPlayer(session, name);
 
 		messageService.broadcastPlayerList(playerService.getPlayerList());
 	}

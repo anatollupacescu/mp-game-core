@@ -1,7 +1,6 @@
-package skeleton.bean.player;
+package skeleton.bean;
 
 import org.eclipse.jetty.websocket.api.Session;
-import reactor.rx.action.Control;
 
 public class Player {
 
@@ -11,8 +10,6 @@ public class Player {
 	private int color;
 	private boolean ready;
 	private int cellCount;
-	private ReadyButton readyButtonState = ReadyButton.active;
-	private Control control;
 
 	public Player(Session session) {
 		this.session = session;
@@ -73,14 +70,6 @@ public class Player {
 		return session;
 	}
 
-	public ReadyButton getReadyButtonState() {
-		return readyButtonState;
-	}
-
-	public void setReadyButtonState(ReadyButton readyButtonState) {
-		this.readyButtonState = readyButtonState;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -100,17 +89,5 @@ public class Player {
 		int result = session.hashCode();
 		result = 31 * result + name.hashCode();
 		return result;
-	}
-
-	public void setControl(Control control) {
-		this.control = control;
-	}
-
-	public Control getControl() {
-		return control;
-	}
-
-	public void disableReadyButton() {
-
 	}
 }
