@@ -22,18 +22,16 @@ public class InMemoryPlayerStore implements PlayerStore {
 	}
 
 	public Optional<Player> removePlayerBySession(Session session) {
-		Optional<Player> player = lookupPlayerBySession(session);
-		if(player.isPresent()) {
-			playerList.remove(player);
-			return player;
+		Optional<Player> playerOpt = lookupPlayerBySession(session);
+		if(playerOpt.isPresent()) {
+			playerList.remove(playerOpt.get());
+			return playerOpt;
 		}
 		return Optional.empty();
 	}
 
 	public void broadcastPlayerList() {
-		for(Player p : playerList) {
-			p.sendPlayerList(getPlayerList());
-		}
+		playerList.stream().forEach(p -> p.sendPlayerList(getPlayerList()));
 	}
 
 	public void broadcastWinner(Player winner) {
@@ -68,7 +66,7 @@ public class InMemoryPlayerStore implements PlayerStore {
 	}
 
 	public void updateEveryonesStatusToStandBy() {
-		throw new IllegalStateException("Not implemented");
+		playerList.stream().forEach(player -> player.setStatus(Status.standby));
 	}
 
 	@Override

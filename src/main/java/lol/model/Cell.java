@@ -28,14 +28,6 @@ public class Cell {
 		return owner;
 	}
 
-	public void decrementOwnersCount() {
-		owner.decrementCellCount();
-	}
-
-	public boolean hasOwner() {
-		return owner != null;
-	}
-
 	public int getId() {
 		return id;
 	}

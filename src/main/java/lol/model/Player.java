@@ -7,7 +7,7 @@ public class Player {
 	private final transient Session session;
 	
 	private final String name;
-	private Status status;
+	private Status status = Status.standby;
 	private int cellCount = -1;
 	private int color;
 	

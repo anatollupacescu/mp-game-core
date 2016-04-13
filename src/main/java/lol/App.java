@@ -34,19 +34,15 @@ public class App {
 	}
 
 	public void disconnect(Session session) {
-		executor.execute(() -> {
+		executor.execute(() ->
 			playerList.removePlayerBySession(session).ifPresent(player -> {
 				playerList.broadcastPlayerList();
-				game.dropPlayer(player);
-				if (game.isRunning() && game.getPlayersCount() == 1) {
-					game.getWinner().ifPresent(winner -> {
-						game.stopGame();
-						playerList.broadcastWinner(winner);
-						playerList.resetReadyFlag();
-					});
+				if (game.isRunning()) {
+					game.dropPlayer(player);
+					gameWinnerRoutine();
 				}
-			});
-		});
+			})
+		);
 	}
 
 	public void name(Session session, String name) {
@@ -90,15 +86,21 @@ public class App {
 			session.sendErrorMessage("Game is not running");
 			return;
 		}
-		playerList.lookupPlayerBySession(session).ifPresent(player -> executor.execute(() -> {
-			game.checkCellById(player, id).ifPresent(cell -> {
-				playerList.broadcastCheckedCell(cell);
-				game.getWinner().ifPresent(winner -> {
-					playerList.broadcastWinner(winner);
-					game.stopGame();
-					playerList.updateEveryonesStatusToStandBy();
-				});
-			});
-		}));
+		playerList.lookupPlayerBySession(session).ifPresent(player ->
+				executor.execute(() ->
+					game.checkCellById(player, id).ifPresent(cell -> {
+						playerList.broadcastCheckedCell(cell);
+						gameWinnerRoutine();
+					})
+		));
+	}
+
+	private void gameWinnerRoutine() {
+		game.getWinner().ifPresent(winner -> {
+			game.stopGame();
+			playerList.broadcastWinner(winner);
+			playerList.updateEveryonesStatusToStandBy();
+			playerList.broadcastPlayerList();
+		});
 	}
 }
