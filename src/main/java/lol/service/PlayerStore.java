@@ -13,7 +13,7 @@ public interface PlayerStore {
 
     List<Player> getPlayerList();
 
-    Optional<Player> removePlayerBySession(Session session);
+    void removePlayerBySession(Session session);
 
     void broadcastPlayerList();
 

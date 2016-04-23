@@ -1,66 +1,96 @@
 package lol.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
-import lol.model.CapturingSession;
+import lol.App;
 import lol.model.Player;
 
 public class GameTest {
 
 	@Test
 	public void createGameWorks() {
-		Player p1 = new Player(new CapturingSession(), "p1");
-		Player p2 = new Player(new CapturingSession(), "p2");
-		List<Player> playerList = Arrays.asList(p1, p2);
-		int cellCount = 64;
-		Game game = new InMemoryGame(cells -> {
-		});
-		game.startGame(playerList, cellCount);
-		assertEquals(2, game.getPlayersCount());
-		assertEquals(cellCount, game.getData().size());
-		assertFalse(game.getWinner().isPresent());
-		int p1cells = p1.getCellCount();
-		game.checkCellById(p1, "0");
-		assertEquals(p1cells - 1, p1.getCellCount());
-		game.checkCellById(p1, "1");
-		assertEquals(p1cells - 2, p1.getCellCount());
-		game.checkCellById(p1, "1");
-		assertEquals(p1cells - 2, p1.getCellCount());
-		for (int i = 2; i < 21; i++) {
-			assertFalse(game.getWinner().isPresent());
-			game.checkCellById(p1, Integer.valueOf(i).toString());
-		}
-		assertEquals(0, p1.getCellCount());
-		assertTrue(game.getWinner().isPresent());
-		Player winner = game.getWinner().get();
-		assertEquals(winner, p1);
+		List<Player> players = null;
+		App app = createApp();
+		assertNotNull(app);
+		/* no players present */
+		connect(app, null, players);
+		/* try illegal action */
+		cell(app, null);
+		/* try illegal action */
+		disconnect(app, null);
+		/* adding one player */
+		players = new ArrayList<>();
+		Player player = addPlayer(players, null, "p1");
+		logIn(app, player, players);
+		/* one player preset */
+		connect(app, null, players);
+		/* try illegal action */
+		cell(app, null);
+		/* try illegal action */
+		disconnect(app, null);
+		/* add player p2 */
+		Player player2 = addPlayer(players, null, "p2");
+		logIn(app, player2, players);
+		assertEquals(players, ((CapturingSession)player.getSession()).pop());
+		System.out.println("Checked>> " + players);
+		/* two players preset */
+		connect(app, null, players);
+		/* two players preset */
+		connect(app, null, players);
+	}
 
-		game = new InMemoryGame(cells -> {
-		});
-		game.startGame(playerList, cellCount);
-		assertEquals(2, game.getPlayersCount());
-		assertEquals(cellCount, game.getData().size());
-		p1cells = p1.getCellCount();
-		game.checkCellById(p1, "0");
-		assertEquals(p1cells - 1, p1.getCellCount());
-		game.checkCellById(p1, "1");
-		assertEquals(p1cells - 2, p1.getCellCount());
-		game.checkCellById(p1, "1");
-		assertEquals(p1cells - 2, p1.getCellCount());
-		for (int i = 2; i < 21; i++) {
-			assertFalse(game.getWinner().isPresent());
-			game.checkCellById(p1, Integer.valueOf(i).toString());
+	private void disconnect(App app, CapturingSession session) {
+		if (session == null) {
+			session = new CapturingSession();
 		}
-		assertEquals(0, p1.getCellCount());
-		assertTrue(game.getWinner().isPresent());
-		winner = game.getWinner().get();
-		assertEquals(winner, p1);
+		app.disconnect(session);
+		assertEquals("Not connected", session.pop());
+		System.out.println("Checked>> Not connected");
+	}
+
+	private void cell(App app, CapturingSession session) {
+		if (session == null) {
+			session = new CapturingSession();
+		}
+		app.cell(session, "1");
+		assertEquals("Game is not running", session.pop());
+		System.out.println("Checked>> Game is not running");
+	}
+
+	private Player addPlayer(List<Player> players, CapturingSession session, String string) {
+		if (session == null) {
+			session = new CapturingSession();
+		}
+		Player player = new Player(session, string);
+		players.add(player);
+		player.setColor(players.size());
+		return player;
+	}
+
+	private void logIn(App app, Player player, List<Player> players) {
+		app.name(player.getSession(), player.getName());
+		assertEquals(players, ((CapturingSession)player.getSession()).pop());
+		System.out.println("Checked>> " + players);
+	}
+
+	private void connect(App app, CapturingSession session, List<Player> players) {
+		if (session == null) {
+			session = new CapturingSession();
+		}
+		app.connect(session);
+		assertEquals(players, session.pop());
+		System.out.println("Checked>> " + players);
+	}
+
+	private App createApp() {
+		PlayerStore playerStore = new InMemoryPlayerStore();
+		Game game = new InMemoryGame(new RandomShuffler());
+		return new App(playerStore, game, 6);
 	}
 }
