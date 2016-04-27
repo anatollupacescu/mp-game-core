@@ -55,20 +55,24 @@ public class InMemoryGame implements Game {
 		playerList.remove(player);
 	}
 
-	public Optional<Cell> checkCellById(Player owner, String id) {
-		Integer cellId = Integer.valueOf(id);
-		Cell cell = cells.get(cellId);
-		if (cell != null && !cell.isChecked() && owner.equals(cell.getOwner())) {
-			cell.check();
+	public Optional<Cell> lookupCellByPlayerAndId(Player owner, String id) {
+		try {
+			Integer cellId = Integer.valueOf(id);
+			Cell cell = cells.get(cellId);
 			cell.setId(cellId);
-			owner.decrementCellCount();
 			return Optional.of(cell);
+		} catch (Exception e) {
+			return Optional.empty();
 		}
-		return Optional.empty();
+	}
+
+	public void checkCell(Cell cell, Player owner) {
+		cell.check();
+		owner.decrementCellCount();
 	}
 
 	public Optional<Player> getWinner() {
-		if(playerList.size() == 1) {
+		if (playerList.size() == 1) {
 			return Optional.of(playerList.iterator().next());
 		}
 		return playerList.stream().filter(player -> player.getCellCount() == 0).findFirst();

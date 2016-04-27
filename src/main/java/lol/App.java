@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import lol.model.Cell;
 import lol.model.Player;
 import lol.model.Session;
 import lol.model.Status;
@@ -34,15 +35,19 @@ public class App {
 	}
 
 	public void disconnect(Session session) {
-		executor.execute(() ->
-			playerList.removePlayerBySession(session).ifPresent(player -> {
+		Optional<Player> playerOpt = playerList.lookupPlayerBySession(session);
+		if(playerOpt.isPresent()) {
+			executor.execute(() -> {
+				playerList.removePlayerBySession(session);
 				playerList.broadcastPlayerList();
 				if (game.isRunning()) {
-					game.dropPlayer(player);
+					game.dropPlayer(playerOpt.get());
 					gameWinnerRoutine();
 				}
-			})
-		);
+			});
+		} else {
+			session.sendErrorMessage("Not connected");
+		}
 	}
 
 	public void name(Session session, String name) {
@@ -86,13 +91,21 @@ public class App {
 			session.sendErrorMessage("Game is not running");
 			return;
 		}
-		playerList.lookupPlayerBySession(session).ifPresent(player ->
-				executor.execute(() ->
-					game.checkCellById(player, id).ifPresent(cell -> {
-						playerList.broadcastCheckedCell(cell);
-						gameWinnerRoutine();
-					})
-		));
+		playerList.lookupPlayerBySession(session).ifPresent(player -> {
+			game.lookupCellByPlayerAndId(player, id).ifPresent(cell -> {
+				checkCell(cell, player);
+			});
+		});
+	}
+
+	private void checkCell(Cell cell, Player player) {
+		if(player.equals(cell.getOwner()) && !cell.isChecked()) {
+			executor.execute(() -> {
+				game.checkCell(cell, player);
+				playerList.broadcastCheckedCell(cell);
+				gameWinnerRoutine();
+			});		
+		}
 	}
 
 	private void gameWinnerRoutine() {

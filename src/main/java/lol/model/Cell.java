@@ -14,10 +14,8 @@ public class Cell {
         this.owner = player;
     }
 
-    public boolean check() {
-        if(checked) return false;
+    public void check() {
         checked = true;
-        return true;
     }
 
 	public boolean isChecked() {

@@ -21,13 +21,9 @@ public class InMemoryPlayerStore implements PlayerStore {
 		return playerList;
 	}
 
-	public Optional<Player> removePlayerBySession(Session session) {
-		Optional<Player> playerOpt = lookupPlayerBySession(session);
-		if(playerOpt.isPresent()) {
-			playerList.remove(playerOpt.get());
-			return playerOpt;
-		}
-		return Optional.empty();
+	public void removePlayerBySession(Session session) {
+		lookupPlayerBySession(session).ifPresent(player -> 
+			playerList.remove(player));
 	}
 
 	public void broadcastPlayerList() {

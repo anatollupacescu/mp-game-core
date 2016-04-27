@@ -20,7 +20,9 @@ public interface Game {
 
     void dropPlayer(Player player);
 
-    Optional<Cell> checkCellById(Player owner, String id);
-
+    Optional<Cell> lookupCellByPlayerAndId(Player owner, String id);
+    
+    public void checkCell(Cell cell, Player owner);
+    
     Optional<Player> getWinner();
 }

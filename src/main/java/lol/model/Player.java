@@ -71,4 +71,43 @@ public class Player {
 	public void setColor(int color) {
 		this.color = color;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + color;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((session == null) ? 0 : session.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Player other = (Player) obj;
+		if (color != other.color)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (session == null) {
+			if (other.session != null)
+				return false;
+		} else if (!session.equals(other.session))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Player [name=" + name + ", status=" + status + ", color=" + color + "]";
+	}
 }
